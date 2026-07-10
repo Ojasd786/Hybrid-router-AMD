@@ -1,0 +1,11 @@
+transformers
+accelerate
+huggingface_hub
+fastapi
+uvicorn
+requests
+pydantic
+sentencepiece
+safetensors
+python-dotenv
+openai
