@@ -4,6 +4,11 @@ server.py
 FastAPI server exposing the local language model.
 """
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from fastapi import FastAPI
 from fastapi import HTTPException
 from pydantic import BaseModel

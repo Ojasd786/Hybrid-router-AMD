@@ -1,5 +1,6 @@
 """
 config.py
+=========
 
 Central configuration module for the Hybrid AI Router.
 
@@ -35,9 +36,8 @@ class Settings:
 
     request_timeout: int = 60
     max_retries: int = 3
-    
-    # Lowered temperature to 0.1 for more concise, deterministic (token-efficient) answers
-    temperature: float = 0.1 
+    temperature: float = 0.1
+    max_tokens: int = 4096
 
 
 class ConfigurationError(RuntimeError):
@@ -52,13 +52,9 @@ def _require_env(name: str) -> str:
     Raises:
         ConfigurationError: If the variable does not exist or is empty.
     """
-    value = os.getenv(name)
-
+    value = os.environ.get(name)
     if value is None or value.strip() == "":
-        raise ConfigurationError(
-            f"Missing required environment variable: {name}"
-        )
-
+        raise ConfigurationError(f"Missing required environment variable: {name}")
     return value.strip()
 
 
@@ -70,16 +66,9 @@ def load_settings() -> Settings:
     base_url = _require_env("FIREWORKS_BASE_URL")
     allowed_models_raw = _require_env("ALLOWED_MODELS")
 
-    models = [
-        model.strip()
-        for model in allowed_models_raw.split(",")
-        if model.strip()
-    ]
-
-    if len(models) == 0:
-        raise ConfigurationError(
-            "ALLOWED_MODELS contains no valid model IDs."
-        )
+    models = [model.strip() for model in allowed_models_raw.split(",") if model.strip()]
+    if not models:
+        raise ConfigurationError("ALLOWED_MODELS contains no valid model IDs.")
 
     return Settings(
         fireworks_api_key=api_key,
